@@ -1,9 +1,7 @@
 package com.wowfinstack.backend.service.impl;
 
-import com.wowfinstack.backend.dto.EmployeeDto;
-import com.wowfinstack.backend.dto.EmployeeRegisterRequest;
+import com.wowfinstack.backend.dto.*;
 import com.wowfinstack.backend.dto.GetEmployeeDto;
-import com.wowfinstack.backend.dto.RegisterResponse;
 import com.wowfinstack.backend.entity.Employee;
 import com.wowfinstack.backend.entity.User;
 import com.wowfinstack.backend.repository.EmployeeRepository;
@@ -65,11 +63,21 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setPhone(request.getPhone());
         employee.setPosition(request.getPosition());
         employeeRepository.save(employee);
-        return new RegisterResponse("User registered successfully");
+
+        GetEmployeeDto response = new GetEmployeeDto();
+        response.setEmp_id(employee.getEmp_id());
+        response.setUser_id(user.getUser_id());
+        response.setUsername(user.getUsername());
+        response.setName(employee.getName());
+        response.setAddress(employee.getAddress());
+        response.setPhone(employee.getPhone());
+        response.setPosition(employee.getPosition());
+
+        return new RegisterResponse("User registered successfully", response);
     }
 
     @Override
-    public EmployeeDto updateEmployee(int emp_id, EmployeeDto dto) {
+    public GetEmployeeDto updateEmployee(int emp_id, EmployeeDto dto) {
         Employee existing = employeeRepository.findById(emp_id).orElseThrow(() ->
                 new RuntimeException("Employee not found with ID: " + emp_id));
         existing.setName(dto.getName());
@@ -89,16 +97,16 @@ public class EmployeeServiceImpl implements EmployeeService {
                 user.setPassword(passwordEncoder.encode(dto.getPassword()));
             }
             userRepository.save(user);
+            updatedUsername = user.getUsername();
         }
-        EmployeeDto response = modelMapper.map(updated, EmployeeDto.class);
+        GetEmployeeDto response = modelMapper.map(updated, GetEmployeeDto.class);
         response.setUser_id(existing.getUser_id());
         response.setUsername(updatedUsername);
         return response;
-        //return modelMapper.map(updated, EmployeeDto.class);
     }
 
     @Override
-    public EmployeeDto patchEmployee(int emp_id, EmployeeDto dto) {
+    public GetEmployeeDto patchEmployee(int emp_id, EmployeeDto dto) {
         Optional<Employee> optional = employeeRepository.findById(emp_id);
         if (optional.isPresent()) {
             Employee entity = optional.get();
@@ -129,11 +137,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 userRepository.save(user);
                 patchedUsername = user.getUsername();
             }
-            EmployeeDto response = modelMapper.map(updated, EmployeeDto.class);
+            GetEmployeeDto response = modelMapper.map(updated, GetEmployeeDto.class);
             response.setUser_id(entity.getUser_id());
             response.setUsername(patchedUsername);
             return response;
-            //return modelMapper.map(updated, EmployeeDto.class);
         }else {
             throw new RuntimeException("Employee not found with ID: " + emp_id);
         }

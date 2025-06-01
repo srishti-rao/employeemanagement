@@ -30,18 +30,18 @@ public class EmployeeController {
     }
 
 
-    @PostMapping("/register")
+    @PostMapping
     public RegisterResponse registerEmployee(@RequestBody EmployeeRegisterRequest request) {
         return employeeService.registerEmployee(request);
     }
 
     @PutMapping("/{emp_id}")
-    public EmployeeDto updateEmployee(@PathVariable int emp_id, @RequestBody EmployeeDto dto) {
+    public GetEmployeeDto updateEmployee(@PathVariable int emp_id, @RequestBody EmployeeDto dto) {
         return employeeService.updateEmployee(emp_id, dto);
     }
 
     @PatchMapping("/{emp_id}")
-    public EmployeeDto patchEmployee(@PathVariable int emp_id, @RequestBody EmployeeDto dto) {
+    public GetEmployeeDto patchEmployee(@PathVariable int emp_id, @RequestBody EmployeeDto dto) {
         return employeeService.patchEmployee(emp_id, dto);
     }
 

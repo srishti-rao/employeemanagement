@@ -11,7 +11,7 @@ public interface EmployeeService {
     List<GetEmployeeDto> getAllEmployees();
     GetEmployeeDto findById(int emp_id);
     RegisterResponse registerEmployee(EmployeeRegisterRequest request);
-    EmployeeDto updateEmployee(int emp_id, EmployeeDto dto);
-    EmployeeDto patchEmployee(int emp_id, EmployeeDto dto);
+    GetEmployeeDto updateEmployee(int emp_id, EmployeeDto dto);
+    GetEmployeeDto patchEmployee(int emp_id, EmployeeDto dto);
     void deleteEmployee(int emp_id);
 }
