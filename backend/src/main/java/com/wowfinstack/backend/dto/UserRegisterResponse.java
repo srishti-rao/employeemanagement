@@ -11,6 +11,6 @@ import lombok.Setter;
 @Setter
 public class UserRegisterResponse {
     private String message;
-    private int user_id;
+    private int userId;
     private String username;
 }

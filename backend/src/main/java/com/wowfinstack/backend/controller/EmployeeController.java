@@ -24,9 +24,9 @@ public class EmployeeController {
         return employeeService.getAllEmployees();
     }
 
-    @GetMapping("/{emp_id}")
-    public GetEmployeeDto getById(@PathVariable int emp_id) {
-        return employeeService.findById(emp_id);
+    @GetMapping("/{empId}")
+    public GetEmployeeDto getById(@PathVariable int empId) {
+        return employeeService.findById(empId);
     }
 
 
@@ -35,18 +35,18 @@ public class EmployeeController {
         return employeeService.registerEmployee(request);
     }
 
-    @PutMapping("/{emp_id}")
-    public GetEmployeeDto updateEmployee(@PathVariable int emp_id, @RequestBody EmployeeDto dto) {
-        return employeeService.updateEmployee(emp_id, dto);
+    @PutMapping("/{empId}")
+    public GetEmployeeDto updateEmployee(@PathVariable int empId, @RequestBody EmployeeDto dto) {
+        return employeeService.updateEmployee(empId, dto);
     }
 
-    @PatchMapping("/{emp_id}")
-    public GetEmployeeDto patchEmployee(@PathVariable int emp_id, @RequestBody EmployeeDto dto) {
-        return employeeService.patchEmployee(emp_id, dto);
+    @PatchMapping("/{empId}")
+    public GetEmployeeDto patchEmployee(@PathVariable int empId, @RequestBody EmployeeDto dto) {
+        return employeeService.patchEmployee(empId, dto);
     }
 
-    @DeleteMapping("/{emp_id}")
-    public void deleteEmployee(@PathVariable int emp_id) {
-        employeeService.deleteEmployee(emp_id);
+    @DeleteMapping("/{empId}")
+    public void deleteEmployee(@PathVariable int empId) {
+        employeeService.deleteEmployee(empId);
     }
 }

@@ -10,15 +10,14 @@ import lombok.*;
 @Entity
 @Table(name="employees")
 public class Employee {
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id", nullable=false)
-    private int user_id;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="emp_id", nullable=false)
-    private int emp_id;
+    private int empId;
+
+    @Column(name="user_Id", nullable=false)
+    private int userId;
 
     @Column(name="name")
     private String name;
@@ -31,10 +30,5 @@ public class Employee {
 
     @Column(name="position")
     private String position;
-
-//    @OneToOne
-//    @MapsId
-//    @JoinColumn(name="id")
-//    private User user;
 
 }

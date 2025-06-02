@@ -35,8 +35,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.findAll().stream()
                 .map(employee -> {
                     GetEmployeeDto dto = modelMapper.map(employee, GetEmployeeDto.class);
-                    dto.setUser_id(employee.getUser_id());
-                    Optional<User> userOpt = userRepository.findById((long) employee.getUser_id());
+                    dto.setUserId(employee.getUserId());
+                    Optional<User> userOpt = userRepository.findById((long) employee.getUserId());
                     if (userOpt.isPresent()) {
                         User user = userOpt.get();
                         dto.setUsername(user.getUsername());
@@ -52,19 +52,27 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         if (existingUserOpt.isPresent()) {
             User existingUser = existingUserOpt.get();
-            Optional<Employee> existingEmployeeOpt = employeeRepository.findByUser_id(existingUser.getUser_id());
+            Optional<Employee> existingEmployeeOpt = employeeRepository.findByUserId(existingUser.getUserId());
 
             if (existingEmployeeOpt.isPresent()) {
                 Employee existingEmployee = existingEmployeeOpt.get();
                 return new EmployeeRegisterResponse(
                         "User already exists",
-                        existingUser.getUser_id(),
+                        existingUser.getUserId(),
                         existingUser.getUsername(),
-                        existingEmployee.getEmp_id(),
+                        existingEmployee.getEmpId(),
                         existingEmployee.getName(),
                         existingEmployee.getAddress(),
                         existingEmployee.getPhone(),
                         existingEmployee.getPosition()
+                );
+            } else {
+                // User exists but no employee record found; optionally handle this case
+                return new EmployeeRegisterResponse(
+                        "User exists but employee record not found",
+                        existingUser.getUserId(),
+                        existingUser.getUsername(),
+                        0, null, null, null, null
                 );
             }
         }
@@ -75,7 +83,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             userRepository.save(user);
 
             Employee employee = new Employee();
-            employee.setUser_id(user.getUser_id());
+            employee.setUserId(user.getUserId());
             employee.setName(request.getName());
             employee.setAddress(request.getAddress());
             employee.setPhone(request.getPhone());
@@ -83,8 +91,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeRepository.save(employee);
 
             GetEmployeeDto response = new GetEmployeeDto();
-            response.setEmp_id(employee.getEmp_id());
-            response.setUser_id(user.getUser_id());
+            response.setEmpId(employee.getEmpId());
+            response.setUserId(user.getUserId());
             response.setUsername(user.getUsername());
             response.setName(employee.getName());
             response.setAddress(employee.getAddress());
@@ -93,9 +101,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             return new EmployeeRegisterResponse(
                     "User registered successfully",
-                    user.getUser_id(),
+                    user.getUserId(),
                     user.getUsername(),
-                    employee.getEmp_id(),
+                    employee.getEmpId(),
                     employee.getName(),
                     employee.getAddress(),
                     employee.getPhone(),
@@ -105,16 +113,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public GetEmployeeDto updateEmployee(int emp_id, EmployeeDto dto) {
-        Employee existing = employeeRepository.findById(emp_id).orElseThrow(() ->
-                new RuntimeException("Employee not found with ID: " + emp_id));
+    public GetEmployeeDto updateEmployee(int empId, EmployeeDto dto) {
+        Employee existing = employeeRepository.findById(empId).orElseThrow(() ->
+                new RuntimeException("Employee not found with ID: " + empId));
         existing.setName(dto.getName());
         existing.setAddress(dto.getAddress());
         existing.setPhone(dto.getPhone());
         existing.setPosition(dto.getPosition());
         Employee updated = employeeRepository.save(existing);
 
-        Optional<User> userOpt = userRepository.findById((long)existing.getUser_id());
+        Optional<User> userOpt = userRepository.findById((long)existing.getUserId());
         String updatedUsername = null;
         if (userOpt.isPresent()) {
             User user = userOpt.get();
@@ -128,14 +136,14 @@ public class EmployeeServiceImpl implements EmployeeService {
             updatedUsername = user.getUsername();
         }
         GetEmployeeDto response = modelMapper.map(updated, GetEmployeeDto.class);
-        response.setUser_id(existing.getUser_id());
+        response.setUserId(existing.getUserId());
         response.setUsername(updatedUsername);
         return response;
     }
 
     @Override
-    public GetEmployeeDto patchEmployee(int emp_id, EmployeeDto dto) {
-        Optional<Employee> optional = employeeRepository.findById(emp_id);
+    public GetEmployeeDto patchEmployee(int empId, EmployeeDto dto) {
+        Optional<Employee> optional = employeeRepository.findById(empId);
         if (optional.isPresent()) {
             Employee entity = optional.get();
             if (dto.getName() != null) {
@@ -152,7 +160,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
             Employee updated = employeeRepository.save(entity);
 
-            Optional<User> userOpt = userRepository.findById((long) entity.getUser_id());
+            Optional<User> userOpt = userRepository.findById((long) entity.getUserId());
             String patchedUsername = null;
             if (userOpt.isPresent()) {
                 User user = userOpt.get();
@@ -166,31 +174,31 @@ public class EmployeeServiceImpl implements EmployeeService {
                 patchedUsername = user.getUsername();
             }
             GetEmployeeDto response = modelMapper.map(updated, GetEmployeeDto.class);
-            response.setUser_id(entity.getUser_id());
+            response.setUserId(entity.getUserId());
             response.setUsername(patchedUsername);
             return response;
         }else {
-            throw new RuntimeException("Employee not found with ID: " + emp_id);
+            throw new RuntimeException("Employee not found with ID: " + empId);
         }
     }
 
 
     @Override
-    public void deleteEmployee(int emp_id){
-        employeeRepository.deleteById(emp_id);
+    public void deleteEmployee(int empId){
+        employeeRepository.deleteById(empId);
     }
 
     @Override
-    public GetEmployeeDto findById(int emp_id) {
-        Optional<Employee> entity = employeeRepository.findById(emp_id);
+    public GetEmployeeDto findById(int empId) {
+        Optional<Employee> entity = employeeRepository.findById(empId);
         if (entity.isEmpty()) {
-            System.out.println("Employee not found with ID: " + emp_id);
+            System.out.println("Employee not found with ID: " + empId);
             return null;
         }
 
         GetEmployeeDto dto = modelMapper.map(entity, GetEmployeeDto.class);
-        dto.setUser_id(entity.get().getUser_id());
-        Optional<User> userOpt = userRepository.findById((long) entity.get().getUser_id());
+        dto.setUserId(entity.get().getUserId());
+        Optional<User> userOpt = userRepository.findById((long) entity.get().getUserId());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             dto.setUsername(user.getUsername());

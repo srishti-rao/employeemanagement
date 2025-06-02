@@ -38,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
             User existingUser = existingUserOpt.get();
             return new UserRegisterResponse(
                     "User already exists",
-                    existingUser.getUser_id(),
+                    existingUser.getUserId(),
                     existingUser.getUsername()
             );
         }
@@ -51,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
 
         return new UserRegisterResponse(
                 "User registered successfully",
-                savedUser.getUser_id(),
+                savedUser.getUserId(),
                 savedUser.getUsername());
 
     }

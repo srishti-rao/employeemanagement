@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface EmployeeService {
     List<GetEmployeeDto> getAllEmployees();
-    GetEmployeeDto findById(int emp_id);
+    GetEmployeeDto findById(int empId);
     EmployeeRegisterResponse registerEmployee(EmployeeRegisterRequest request);
-    GetEmployeeDto updateEmployee(int emp_id, EmployeeDto dto);
-    GetEmployeeDto patchEmployee(int emp_id, EmployeeDto dto);
-    void deleteEmployee(int emp_id);
+    GetEmployeeDto updateEmployee(int empId, EmployeeDto dto);
+    GetEmployeeDto patchEmployee(int empId, EmployeeDto dto);
+    void deleteEmployee(int empId);
 }

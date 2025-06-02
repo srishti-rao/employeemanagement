@@ -8,9 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 public class EmployeeRegisterResponse {
     private String message;
-    private int user_id;
+    private int userId;
     private String username;
-    private int emp_id;
+    private int empId;
     private String name;
     private String address;
     private String phone;

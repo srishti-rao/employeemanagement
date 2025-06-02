@@ -7,10 +7,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeDto {
-    private int user_id;
+    private int userId;
     private String username;
     private String password;
-    private int emp_id;
+    private int empId;
     private String name;
     private String address;
     private String phone;
