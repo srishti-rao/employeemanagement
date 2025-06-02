@@ -6,9 +6,11 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmployeeRegisterRequest {
+public class EmployeeRegisterResponse {
+    private String message;
+    private int user_id;
     private String username;
-    private String password;
+    private int emp_id;
     private String name;
     private String address;
     private String phone;

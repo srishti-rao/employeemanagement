@@ -3,7 +3,7 @@ package com.wowfinstack.backend.controller;
 import com.wowfinstack.backend.dto.EmployeeDto;
 import com.wowfinstack.backend.dto.EmployeeRegisterRequest;
 import com.wowfinstack.backend.dto.GetEmployeeDto;
-import com.wowfinstack.backend.dto.RegisterResponse;
+import com.wowfinstack.backend.dto.EmployeeRegisterResponse;
 import com.wowfinstack.backend.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,7 @@ public class EmployeeController {
 
 
     @PostMapping
-    public RegisterResponse registerEmployee(@RequestBody EmployeeRegisterRequest request) {
+    public EmployeeRegisterResponse registerEmployee(@RequestBody EmployeeRegisterRequest request) {
         return employeeService.registerEmployee(request);
     }
 

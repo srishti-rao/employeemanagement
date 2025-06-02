@@ -12,6 +12,8 @@ import com.wowfinstack.backend.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AuthServiceImpl implements AuthService {
     @Autowired
@@ -29,18 +31,28 @@ public class AuthServiceImpl implements AuthService {
     private EmployeeRepository employeeRepository;
 
     @Override
-    public RegisterResponse userRegister(UserRegisterRequest request) {
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            return new RegisterResponse("User already exists");
+    public UserRegisterResponse userRegister(UserRegisterRequest request) {
+        Optional<User> existingUserOpt = userRepository.findByUsername(request.getUsername());
 
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+            return new UserRegisterResponse(
+                    "User already exists",
+                    existingUser.getUser_id(),
+                    existingUser.getUsername()
+            );
         }
+
 
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
-        return new RegisterResponse("User registered successfully");
+        return new UserRegisterResponse(
+                "User registered successfully",
+                savedUser.getUser_id(),
+                savedUser.getUsername());
 
     }
 

@@ -47,9 +47,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public RegisterResponse registerEmployee(EmployeeRegisterRequest request) {
+    public EmployeeRegisterResponse registerEmployee(EmployeeRegisterRequest request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            return new RegisterResponse("User already exists");
+            return new EmployeeRegisterResponse("User already exists");
         }
         User user = new User();
         user.setUsername(request.getUsername());
@@ -73,7 +73,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         response.setPhone(employee.getPhone());
         response.setPosition(employee.getPosition());
 
-        return new RegisterResponse("User registered successfully", response);
+        return new EmployeeRegisterResponse("User registered successfully", response);
     }
 
     @Override
