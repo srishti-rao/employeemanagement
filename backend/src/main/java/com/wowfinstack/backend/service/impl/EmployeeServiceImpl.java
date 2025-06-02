@@ -48,33 +48,61 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeRegisterResponse registerEmployee(EmployeeRegisterRequest request) {
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            return new EmployeeRegisterResponse("User already exists");
+        Optional<User> existingUserOpt = userRepository.findByUsername(request.getUsername());
+
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+            Optional<Employee> existingEmployeeOpt = employeeRepository.findByUser_id(existingUser.getUser_id());
+
+            if (existingEmployeeOpt.isPresent()) {
+                Employee existingEmployee = existingEmployeeOpt.get();
+                return new EmployeeRegisterResponse(
+                        "User already exists",
+                        existingUser.getUser_id(),
+                        existingUser.getUsername(),
+                        existingEmployee.getEmp_id(),
+                        existingEmployee.getName(),
+                        existingEmployee.getAddress(),
+                        existingEmployee.getPhone(),
+                        existingEmployee.getPosition()
+                );
+            }
         }
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        userRepository.save(user);
 
-        Employee employee = new Employee();
-        employee.setUser_id(user.getUser_id());
-        employee.setName(request.getName());
-        employee.setAddress(request.getAddress());
-        employee.setPhone(request.getPhone());
-        employee.setPosition(request.getPosition());
-        employeeRepository.save(employee);
+            User user = new User();
+            user.setUsername(request.getUsername());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            userRepository.save(user);
 
-        GetEmployeeDto response = new GetEmployeeDto();
-        response.setEmp_id(employee.getEmp_id());
-        response.setUser_id(user.getUser_id());
-        response.setUsername(user.getUsername());
-        response.setName(employee.getName());
-        response.setAddress(employee.getAddress());
-        response.setPhone(employee.getPhone());
-        response.setPosition(employee.getPosition());
+            Employee employee = new Employee();
+            employee.setUser_id(user.getUser_id());
+            employee.setName(request.getName());
+            employee.setAddress(request.getAddress());
+            employee.setPhone(request.getPhone());
+            employee.setPosition(request.getPosition());
+            employeeRepository.save(employee);
 
-        return new EmployeeRegisterResponse("User registered successfully", response);
+            GetEmployeeDto response = new GetEmployeeDto();
+            response.setEmp_id(employee.getEmp_id());
+            response.setUser_id(user.getUser_id());
+            response.setUsername(user.getUsername());
+            response.setName(employee.getName());
+            response.setAddress(employee.getAddress());
+            response.setPhone(employee.getPhone());
+            response.setPosition(employee.getPosition());
+
+            return new EmployeeRegisterResponse(
+                    "User registered successfully",
+                    user.getUser_id(),
+                    user.getUsername(),
+                    employee.getEmp_id(),
+                    employee.getName(),
+                    employee.getAddress(),
+                    employee.getPhone(),
+                    employee.getPosition()
+            );
     }
+
 
     @Override
     public GetEmployeeDto updateEmployee(int emp_id, EmployeeDto dto) {
