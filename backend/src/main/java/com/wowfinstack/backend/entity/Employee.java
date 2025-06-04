@@ -16,7 +16,7 @@ public class Employee {
     @Column(name="emp_id", nullable=false)
     private int empId;
 
-    @Column(name="user_Id", nullable=false)
+    @Column(name="user_id", nullable=false)
     private int userId;
 
     @Column(name="name")

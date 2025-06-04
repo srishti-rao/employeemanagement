@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetEmployeeDto {
+    private String message;
     private int userId;
     private String username;
     private int empId;
