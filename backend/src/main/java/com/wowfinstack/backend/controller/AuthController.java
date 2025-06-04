@@ -1,8 +1,9 @@
 package com.wowfinstack.backend.controller;
 
-import com.wowfinstack.backend.dto.*;
+import com.wowfinstack.backend.dto.auth.*;
 import com.wowfinstack.backend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,5 +25,9 @@ public class AuthController {
         return authService.userLogin(request);
     }
 
-    // try logout
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetUserPassword(@RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.ok("User password reset successfully");
+    }
 }

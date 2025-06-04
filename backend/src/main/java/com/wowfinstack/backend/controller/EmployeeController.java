@@ -1,11 +1,9 @@
 package com.wowfinstack.backend.controller;
 
-import com.wowfinstack.backend.dto.EmployeeDto;
-import com.wowfinstack.backend.dto.EmployeeRegisterRequest;
-import com.wowfinstack.backend.dto.GetEmployeeDto;
-import com.wowfinstack.backend.dto.EmployeeRegisterResponse;
+import com.wowfinstack.backend.dto.employee.*;
 import com.wowfinstack.backend.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -48,5 +46,11 @@ public class EmployeeController {
     @DeleteMapping("/{empId}")
     public void deleteEmployee(@PathVariable int empId) {
         employeeService.deleteEmployee(empId);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetEmployeePassword(@RequestBody ResetEmployeePasswordRequest request) {
+        employeeService.resetEmployeePassword(request);
+        return ResponseEntity.ok("Employee password reset successfully");
     }
 }

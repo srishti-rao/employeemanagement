@@ -1,21 +1,18 @@
 package com.wowfinstack.backend.service.impl;
 
 import com.wowfinstack.backend.config.JwtUtil;
-import com.wowfinstack.backend.dto.*;
+import com.wowfinstack.backend.dto.auth.*;
 import com.wowfinstack.backend.exception.DuplicateResourceException;
-import com.wowfinstack.backend.repository.EmployeeRepository;
+import com.wowfinstack.backend.exception.ResourceNotFoundException;
 import com.wowfinstack.backend.repository.UserRepository;
 import com.wowfinstack.backend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import com.wowfinstack.backend.entity.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.naming.AuthenticationException;
-import java.util.Optional;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -58,5 +55,13 @@ public class AuthServiceImpl implements AuthService {
         response.setMessage("Successfully logged in");
 
         return response;
+    }
+
+    @Override
+    public void resetPassword(ResetPasswordRequest request) {
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Username not found :" + request.getUsername()));
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 }

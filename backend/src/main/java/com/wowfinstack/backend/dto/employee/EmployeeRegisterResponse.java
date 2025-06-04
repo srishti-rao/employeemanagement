@@ -1,4 +1,4 @@
-package com.wowfinstack.backend.dto;
+package com.wowfinstack.backend.dto.employee;
 
 import lombok.*;
 

@@ -1,16 +1,12 @@
-package com.wowfinstack.backend.dto;
+package com.wowfinstack.backend.dto.employee;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetEmployeeDto {
-    private String message;
+public class EmployeeDto {
     private int userId;
     private String username;
     private int empId;

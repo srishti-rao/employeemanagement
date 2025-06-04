@@ -38,6 +38,7 @@ public class SecurityConfig {
 //                        .requestMatchers("/users/**").permitAll()
                         .requestMatchers("/users/register").permitAll()
                         .requestMatchers("/users/login").permitAll()
+                        .requestMatchers("/users/reset-password").permitAll()
                         //.requestMatchers("/employees/register").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

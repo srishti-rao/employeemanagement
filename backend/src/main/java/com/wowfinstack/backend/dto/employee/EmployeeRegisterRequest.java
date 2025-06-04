@@ -1,4 +1,4 @@
-package com.wowfinstack.backend.dto;
+package com.wowfinstack.backend.dto.employee;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 public class EmployeeRegisterRequest {
     private String username;
-    private String password;
+//    private String password;
     private String name;
     private String address;
     private String phone;
