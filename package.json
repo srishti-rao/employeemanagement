@@ -1,0 +1,23 @@
+{
+  "name": "employeemanagement",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/srishti-rao/employeemanagement.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/srishti-rao/employeemanagement/issues"
+  },
+  "homepage": "https://github.com/srishti-rao/employeemanagement#readme",
+  "description": "",
+  "dependencies": {
+    "tailwindcss": "^4.1.8"
+  }
+}
