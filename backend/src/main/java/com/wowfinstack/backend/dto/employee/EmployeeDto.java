@@ -1,6 +1,7 @@
 package com.wowfinstack.backend.dto.employee;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -14,4 +15,6 @@ public class EmployeeDto {
     private String address;
     private String phone;
     private String position;
+    private MultipartFile image;
+    private String email;
 }

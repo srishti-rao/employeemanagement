@@ -3,6 +3,7 @@ package com.wowfinstack.backend.controller;
 import com.wowfinstack.backend.dto.employee.*;
 import com.wowfinstack.backend.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -28,18 +29,18 @@ public class EmployeeController {
     }
 
 
-    @PostMapping
-    public EmployeeRegisterResponse registerEmployee(@RequestBody EmployeeRegisterRequest request) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public EmployeeRegisterResponse registerEmployee(@ModelAttribute EmployeeRegisterRequest request) {
         return employeeService.registerEmployee(request);
     }
 
-    @PutMapping("/{empId}")
-    public GetEmployeeDto updateEmployee(@PathVariable int empId, @RequestBody EmployeeDto dto) {
+    @PutMapping(value="/{empId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public GetEmployeeDto updateEmployee(@PathVariable int empId, @ModelAttribute EmployeeDto dto) {
         return employeeService.updateEmployee(empId, dto);
     }
 
-    @PatchMapping("/{empId}")
-    public GetEmployeeDto patchEmployee(@PathVariable int empId, @RequestBody EmployeeDto dto) {
+    @PatchMapping(value="/{empId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public GetEmployeeDto patchEmployee(@PathVariable int empId, @ModelAttribute EmployeeDto dto) {
         return employeeService.patchEmployee(empId, dto);
     }
 

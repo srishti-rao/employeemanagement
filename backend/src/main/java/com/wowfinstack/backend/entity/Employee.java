@@ -31,4 +31,10 @@ public class Employee {
     @Column(name="position")
     private String position;
 
+    @Column(name="image", columnDefinition = "bytea")
+    private byte[] image;
+
+    @Column(name = "email")
+    private String email;
+
 }

@@ -4,32 +4,36 @@ import com.wowfinstack.backend.dto.employee.*;
 import com.wowfinstack.backend.entity.Employee;
 import com.wowfinstack.backend.entity.User;
 import com.wowfinstack.backend.exception.DuplicateResourceException;
+import com.wowfinstack.backend.exception.ImageStorageException;
 import com.wowfinstack.backend.exception.ResourceNotFoundException;
 import com.wowfinstack.backend.repository.EmployeeRepository;
 import com.wowfinstack.backend.repository.UserRepository;
+import com.wowfinstack.backend.service.EmailService;
 import com.wowfinstack.backend.service.EmployeeService;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserRepository userRepository;
+    private final EmployeeRepository employeeRepository;
+    private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final EmailService emailService;
 
     @Override
     public List<GetEmployeeDto> getAllEmployees() {
@@ -43,6 +47,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 }).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public EmployeeRegisterResponse registerEmployee(EmployeeRegisterRequest request) {
         Optional<User> existingUser = userRepository.findByUsername(request.getUsername());
@@ -55,7 +60,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         User user = new User();
         user.setUsername(request.getUsername());
-//        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPassword(passwordEncoder.encode("default"));
         userRepository.save(user);
 
         Employee employee = new Employee();
@@ -64,11 +69,33 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setAddress(request.getAddress());
         employee.setPhone(request.getPhone());
         employee.setPosition(request.getPosition());
+        try {
+            if (request.getImage() != null && !request.getImage().isEmpty()) {
+                log.info("Processing image: name={}, size={}, content type={}",
+                        request.getImage().getOriginalFilename(),
+                        request.getImage().getSize(),
+                        request.getImage().getContentType());
+                byte[] imageBytes = request.getImage().getBytes();
+                log.info("Image bytes length: {}", imageBytes.length);
+                employee.setImage(request.getImage().getBytes());
+            }
+        } catch (IOException e) {
+            throw new ImageStorageException("Failed to store image", e);
+        }
+        employee.setEmail(request.getEmail());
+        log.info(employee.getImage().getClass().getName());
         employeeRepository.save(employee);
+
+        String subject = "Registration Successful - WowFinStack";
+        String body = String.format("Dear %s,\n\nYou have been successfully registered with WowFinStack.\n\nThanks!", employee.getName());
+        emailService.sendSimpleEmail(employee.getEmail(), subject, body);
+        if(user.getUsername().contains("@")){
+            emailService.sendSimpleEmail(user.getUsername(), subject, body);
+        }
         return new EmployeeRegisterResponse("Employee registered successfully");
     }
 
-
+    @Transactional
     @Override
     public GetEmployeeDto updateEmployee(int empId, EmployeeDto dto) {
         Employee employee = employeeRepository.findById(empId)
@@ -77,6 +104,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setAddress(dto.getAddress());
         employee.setPhone(dto.getPhone());
         employee.setPosition(dto.getPosition());
+        employee.setEmail(dto.getEmail());
+        try {
+            if (dto.getImage() != null && !dto.getImage().isEmpty()) {
+                log.info("Processing image: name={}, size={}, content type={}",
+                        dto.getImage().getOriginalFilename(),
+                        dto.getImage().getSize(),
+                        dto.getImage().getContentType());
+                byte[] imageBytes = dto.getImage().getBytes();
+                log.info("Image bytes length: {}", imageBytes.length);
+                employee.setImage(dto.getImage().getBytes());
+            }
+        } catch (IOException e) {
+            throw new ImageStorageException("Failed to store image", e);
+        }
         employeeRepository.save(employee);
 
         User user = userRepository.findById((long) employee.getUserId())
@@ -92,6 +133,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return response;
     }
 
+    @Transactional
     @Override
     public GetEmployeeDto patchEmployee(int empId, EmployeeDto dto) {
         Employee employee = employeeRepository.findById(empId)
@@ -101,6 +143,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (dto.getAddress() != null) employee.setAddress(dto.getAddress());
         if (dto.getPhone() != null) employee.setPhone(dto.getPhone());
         if (dto.getPosition() != null) employee.setPosition(dto.getPosition());
+        if (dto.getEmail() != null) employee.setEmail(dto.getEmail());
+        try {
+            if (dto.getImage() != null && !dto.getImage().isEmpty()) {
+                log.info("Processing image: name={}, size={}, content type={}",
+                        dto.getImage().getOriginalFilename(),
+                        dto.getImage().getSize(),
+                        dto.getImage().getContentType());
+                byte[] imageBytes = dto.getImage().getBytes();
+                log.info("Image bytes length: {}", imageBytes.length);
+                employee.setImage(dto.getImage().getBytes());
+            }
+        } catch (IOException e) {
+            throw new ImageStorageException("Failed to store image", e);
+        }
         employeeRepository.save(employee);
 
         User user = userRepository.findById((long) employee.getUserId())

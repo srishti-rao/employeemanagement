@@ -18,4 +18,6 @@ public class GetEmployeeDto {
     private String address;
     private String phone;
     private String position;
+    private byte[] image;
+    private String email;
 }
