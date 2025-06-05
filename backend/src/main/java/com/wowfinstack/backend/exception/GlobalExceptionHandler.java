@@ -31,6 +31,11 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST,  "Image upload failed: " +ex.getMessage());
     }
 
+    @ExceptionHandler(EmailSendException.class)
+    public ResponseEntity<?> handleEmailSendException(EmailSendException ex) {
+        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
+    }
+
     private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String message){
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
